@@ -1,16 +1,7 @@
-# User input interpreter & possible wins
-module Settings
-  POSITIONS = {
-    1 => 2,
-    2 => 6,
-    3 => 10,
-    4 => 14,
-    5 => 18,
-    6 => 22,
-    7 => 26,
-    8 => 30,
-    9 => 34
-  }.freeze
+# frozen_string_literal: true
+
+# Game launch/start
+class TicTacToe
   WIN_COMBINATIONS = [[1, 2, 3],
                       [4, 5, 6],
                       [7, 8, 9],
@@ -19,13 +10,10 @@ module Settings
                       [3, 6, 9],
                       [1, 5, 9],
                       [3, 5, 7]].freeze
-end
-
-# Game launch/start
-class Game
-  include Settings
 
   def initialize
+    @board = "\n 1 | 2 | 3\n-----------\n 4 | 5 | 6\n-----------\n 7 | 8 | 9\n\n"
+
     @first_player = Human.new
 
     build_players
@@ -56,31 +44,31 @@ class Game
   end
 
   def single_player_game
-    until @first_player.wins? || @second_player.wins? || Player.ties?
-      @first_player_move = gets.chomp.to_i
-      if @first_player.make_a_move(@first_player_move, 'X') && !@first_player.wins? && !Player.ties?
-        @second_player.make_a_move
+    until @first_player.wins? || @second_player.wins? || Player.ties?(@board)
+      @first_player_move = gets.chomp
+      if @first_player.make_move(@board, @first_player_move, 'X') && !@first_player.wins? && !Player.ties?(@board)
+        @second_player.make_move(@board)
       end
-      puts Player.board
+      puts @board
     end
   end
 
   def multiplayer_game
-    until @first_player.wins? || @second_player.wins? || Player.ties?
-      @first_player_move = gets.chomp.to_i
-      until @first_player.make_a_move(@first_player_move, 'X')
-        puts Player.board
-        @first_player_move = gets.chomp.to_i
+    until @first_player.wins? || @second_player.wins? || Player.ties?(@board)
+      @first_player_move = gets.chomp
+      until @first_player.make_move(@board, @first_player_move, 'X')
+        puts @board
+        @first_player_move = gets.chomp
       end
-      puts Player.board
-      if !@first_player.wins? && !Player.ties?
-        @second_player_move = gets.chomp.to_i
-        until @second_player.make_a_move(@second_player_move, 'O')
-          puts Player.board
-          @second_player_move = gets.chomp.to_i
+      puts @board
+      if !@first_player.wins? && !Player.ties?(@board)
+        @second_player_move = gets.chomp
+        until @second_player.make_move(@board, @second_player_move, 'O')
+          puts @board
+          @second_player_move = gets.chomp
         end
       end
-      puts Player.board
+      puts @board
     end
   end
 
@@ -96,49 +84,37 @@ class Game
 end
 
 # General settings for any player
-class Player < Game
+class Player < TicTacToe
   attr_reader :player_name
-
-  @@board = "\n\s\s\s|\s\s\s|\s\s\n\n\s\s\s|\s\s\s|\s\s\n\n\s\s\s|\s\s\s|\s\s\n\n"
-  @@possible_moves = [*(1..9)]
 
   def initialize
     @past_moves = []
-  end
-
-  def self.board
-    @@board
   end
 
   def wins?
     WIN_COMBINATIONS.any? { |win| @past_moves.permutation(3).include?(win) }
   end
 
-  def self.ties?
-    @@possible_moves.empty?
+  def self.ties?(board)
+    !board.match?(/\d+/)
   end
 
   private
 
-  def make_a_move(move)
-    return unless legal_move?(move)
+  def make_move(board, move)
+    return unless legal_move?(board, move)
 
     save_move(move)
-    reduce_possible_moves(move)
   end
 
-  def legal_move?(move)
-    return true if @@possible_moves.include?(move)
+  def legal_move?(board, move)
+    return true if board.index(move)
 
     puts "\nPlease enter an appropriate number"
   end
 
   def save_move(move)
-    @past_moves.push(move)
-  end
-
-  def reduce_possible_moves(move)
-    @@possible_moves -= [move]
+    @past_moves.push(move.to_i)
   end
 end
 
@@ -150,10 +126,10 @@ class Human < Player
     @player_name = gets.chomp
   end
 
-  def make_a_move(move, mark)
-    return unless super(move)
+  def make_move(board, move, mark)
+    return unless super(board, move)
 
-    @@board[POSITIONS[move]] = mark
+    board.sub!(move, mark)
   end
 end
 
@@ -164,11 +140,13 @@ class Computer < Player
     @player_name = 'Computer'
   end
 
-  def make_a_move(move = @@possible_moves.sample)
-    return unless super
+  def make_move(board, move = [*(1..9)].sample)
+    move = [[*(1..9)] - [move]].sample until board.index(move.to_s)
+    move = move.to_s
+    return unless super(board, move)
 
-    @@board[POSITIONS[move]] = 'O'
+    board.sub!(move, 'O')
   end
 end
 
-Game.new
+TicTacToe.new
