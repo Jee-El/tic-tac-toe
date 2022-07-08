@@ -92,7 +92,7 @@ module TicTacToe
     end
 
     def wins?
-      WIN_COMBINATIONS.any? { |win| @past_moves.permutation(3).include?(win) }
+      WIN_COMBINATIONS.any? { |win| @past_moves.sort.combination(3).include?(win) }
     end
 
     def self.ties?(board)
