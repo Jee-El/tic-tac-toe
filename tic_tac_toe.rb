@@ -26,7 +26,7 @@ module TicTacToe
 
       @is_single_player ? play_single_player : play_multiplayer
 
-      report_results
+      game_over
     end
 
     def build_players
@@ -75,7 +75,7 @@ module TicTacToe
       end
     end
 
-    def report_results
+    def game_over
       if @first_player.wins? || @second_player.wins?
         announce_winner(@first_player.wins? ? @first_player : @second_player)
       else
@@ -115,7 +115,7 @@ module TicTacToe
   class Human < Player
     def initialize
       super
-      puts TTY::Box.frame('Enter your name', padding: [0, 1], align: :center, border: :light)
+      ask_for_name
       @player_name = gets.chomp
       puts "\n"
     end

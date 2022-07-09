@@ -12,6 +12,10 @@ module Messages
                                   fg: :white })
   end
 
+  def ask_for_name
+    puts TTY::Box.frame('Enter your name', padding: [0, 1], align: :center, border: :light)
+  end
+
   def ask_for_game_type
     puts TTY::Box.frame("1 : Single Player,\n\n2 : Multiplayer",
                         padding: [1, 1],
