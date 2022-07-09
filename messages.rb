@@ -1,4 +1,7 @@
-require 'tty-box'
+gemfile true do
+  source 'http://rubygems.org'
+  gem 'tty-box'
+end
 
 # Messages to be displayed to the player(s)
 module Messages
