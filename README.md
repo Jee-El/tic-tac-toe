@@ -8,6 +8,8 @@ It has two modes :
 
 # How to play it
 
+Assuming you have ruby & bundler installed :
+
 - Clone this repository & navigate to `/tic-tac-toe-terminal`.
 
 - Run `ruby tic_tac_toe.rb` in the terminal.
