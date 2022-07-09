@@ -1,1 +1,1 @@
-run = "ruby tic_tac_toe.rb"
+run = "bundle exec ruby tic_tac_toe.rb"
