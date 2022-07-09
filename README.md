@@ -6,4 +6,8 @@ It has two modes :
 
 - Multiplayer.
 
-## DEMO (online)
+# How to play it
+
+- Clone this repository & navigate to `/tic-tac-toe-terminal`.
+
+- Run `ruby tic_tac_toe.rb` in the terminal.
