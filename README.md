@@ -1,4 +1,4 @@
-# tic-tac-toe-terminal
+# Tic Tac Toe in the terminal
 
 It has two modes :
 
