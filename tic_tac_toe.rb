@@ -16,7 +16,7 @@ module TicTacToe
     def initialize
       welcome
 
-      @board = "\n 1 | 2 | 3\n-----------\n 4 | 5 | 6\n-----------\n 7 | 8 | 9\n\n"
+      @board = "\n 1 | 2 | 3\n#{'-' * 11}\n 4 | 5 | 6\n#{'-' * 11}\n 7 | 8 | 9\n\n"
 
       @first_player = Human.new
 
