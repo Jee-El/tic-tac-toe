@@ -6,10 +6,6 @@ It has two modes :
 
 - Multiplayer.
 
-# How to play it
+# Try it on replit
 
-Assuming you have ruby & bundler installed :
-
-- Clone this repository & navigate to `/tic-tac-toe-terminal`.
-
-- Run `ruby tic_tac_toe.rb` in the terminal.
+[![Run on Repl.it](https://repl.it/badge/github/Jee-El/tic-tac-toe-terminal)](https://repl.it/github/Jee-El/tic-tac-toe-terminal)
