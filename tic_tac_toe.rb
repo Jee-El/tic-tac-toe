@@ -76,11 +76,9 @@ module TicTacToe
     end
 
     def game_over
-      if @first_player.wins? || @second_player.wins?
-        announce_winner(@first_player.wins? ? @first_player : @second_player)
-      else
-        announce_a_tie
-      end
+      return announce_a_tie unless @first_player.wins? || @second_player.wins?
+
+      announce_winner (@first_player.wins? ? @first_player : @second_player).player_name
     end
   end
 

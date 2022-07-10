@@ -27,8 +27,8 @@ module Messages
     puts TTY::Box.frame(padding: [0, 1], align: :center, border: :light) { 'Please enter a number between 1 and 9' }
   end
 
-  def announce_winner(winner)
-    puts TTY::Box.frame(winner.player_name,
+  def announce_winner(winner_name)
+    puts TTY::Box.frame(winner_name,
                         padding: [1, 1],
                         align: :center,
                         title: {  top_center: ' THE WINNER IS ',
