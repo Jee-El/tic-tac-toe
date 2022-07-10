@@ -1,0 +1,2 @@
+language = "ruby"
+run = "bundle exec ruby tic_tac_toe.rb"
