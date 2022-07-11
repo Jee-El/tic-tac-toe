@@ -1,18 +1,10 @@
 require './messages'
 
 module TicTacToe
+  WIN_COMBINATIONS = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]].freeze
+
   class Game
     include Messages
-
-    WIN_COMBINATIONS = [[1, 2, 3],
-                        [4, 5, 6],
-                        [7, 8, 9],
-                        [1, 4, 7],
-                        [2, 5, 8],
-                        [3, 6, 9],
-                        [1, 5, 9],
-                        [3, 5, 7]].freeze
-
     def initialize
       welcome
 
@@ -23,17 +15,20 @@ module TicTacToe
       build_players
 
       ask_for_input
-
-      @is_single_player ? play_single_player : play_multiplayer
+    
+      puts @board
+      @is_single_player ? play_single_player : play_multiplayer(@first_player, @second_player)
 
       game_over
     end
 
+    private
+
     def build_players
       loop do
         ask_for_game_type
-        @game_type = gets.chomp
-        case @game_type
+        game_type = gets.chomp
+        case game_type
         when '1'
           @is_single_player = true
           @second_player = Computer.new
@@ -56,23 +51,16 @@ module TicTacToe
       end
     end
 
-    def play_multiplayer
-      until @first_player.wins? || @second_player.wins? || Player.ties?(@board)
-        @first_player_move = gets.chomp
-        until @first_player.make_move(@board, @first_player_move, 'X')
-          puts @board
-          @first_player_move = gets.chomp
-        end
+    def play_multiplayer(current_player, other_player, index = 0, marks = %w[X O])
+      return if other_player.wins? || Player.ties?(@board)
+
+      move = gets.chomp
+      until current_player.make_move(@board, move, marks[index])
         puts @board
-        if !@first_player.wins? && !Player.ties?(@board)
-          @second_player_move = gets.chomp
-          until @second_player.make_move(@board, @second_player_move, 'O')
-            puts @board
-            @second_player_move = gets.chomp
-          end
-        end
-        puts @board
+        move = gets.chomp
       end
+      puts @board
+      play_multiplayer(other_player, current_player, 1 - index)
     end
 
     def game_over
@@ -82,7 +70,8 @@ module TicTacToe
     end
   end
 
-  class Player < Game
+  class Player
+    include Messages
     attr_reader :player_name
 
     def initialize
@@ -100,12 +89,12 @@ module TicTacToe
     private
 
     def make_move(board, move, mark)
-      save_move(move)
-      board.sub!(move, mark)
+      save_move move
+      board.sub! move, mark
     end
 
     def save_move(move)
-      @past_moves.push(move.to_i)
+      @past_moves.push move.to_i
     end
   end
 
@@ -119,11 +108,13 @@ module TicTacToe
     end
 
     def make_move(board, move, mark)
-      return unless legal_move?(board, move)
+      return unless legal_move? board, move
 
       super
     end
 
+    private
+    
     def legal_move?(board, move)
       return true if (1..9).include?(move.to_i) && board.index(move)
 
