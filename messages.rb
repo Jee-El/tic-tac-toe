@@ -64,4 +64,12 @@ module Messages
                                   bottom_center: ' Good Game ' })
     puts "\n"
   end
+
+  def ask_for_another_game
+    puts TTY::Box.frame('Do you wanna play again[y/n]?',
+                        padding: [0, 1],
+                        align: :center,
+                        border: :light)
+    puts "\n"
+  end
 end

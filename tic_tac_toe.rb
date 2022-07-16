@@ -22,6 +22,8 @@ module TicTacToe
         play_multiplayer(@first_player, @second_player)
         game_over
       end
+
+      play_again
     end
 
     private
@@ -139,6 +141,16 @@ module TicTacToe
       when -1 then announce_winner @first_player.player_name
       when 1 then announce_winner @second_player.player_name
       when 0 then announce_a_tie
+      end
+    end
+
+    def play_again
+      loop do
+        ask_for_another_game
+        case gets.chomp.downcase
+        when 'y' then break TicTacToe::Game.new
+        when 'n' then break
+        end
       end
     end
   end
