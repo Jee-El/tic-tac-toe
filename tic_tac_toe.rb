@@ -13,6 +13,14 @@ module TicTacToe
 
       game_type
 
+      play
+
+      play_again
+    end
+
+    private
+
+    def play
       if @is_single_player
         play_single_player
         game_over(@first_player_win_value, @second_player_win_value)
@@ -22,11 +30,7 @@ module TicTacToe
         play_multiplayer(@first_player, @second_player)
         game_over
       end
-
-      play_again
     end
-
-    private
 
     def clear_screen
       puts "\e[1;1H\e[2J"
@@ -132,7 +136,7 @@ module TicTacToe
     end
 
     def play_multiplayer(current_player, other_player, index = 0)
-      return if [-1, 0].include?(check_winner)
+      return if check_winner
 
       move = gets.chomp.to_i
       until current_player.make_move(move, @board, @positions)
