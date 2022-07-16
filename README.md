@@ -2,7 +2,11 @@
 
 It has two modes :
 
-- Single player; the computer chooses random moves,
+- Single player :
+
+  - Easy: The computer chooses random moves.
+
+  - Hard: The computer, or AI, chooses the best possible moves using the minimax algorithm.
 
 - Multiplayer.
 
