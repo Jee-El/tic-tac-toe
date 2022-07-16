@@ -14,15 +14,15 @@ module Messages
   end
 
   def ask_for_name
-    puts TTY::Box.frame('Enter your name', padding: [0, 1], align: :center, border: :light)
+    puts TTY::Box.frame('Type your name', padding: [0, 1], align: :center, border: :light)
     puts "\n"
   end
 
   def ask_for_game_type
-    puts TTY::Box.frame("1 : Single Player,\n\n2 : Multiplayer",
+    puts TTY::Box.frame("1 : Single Player\n\n2 : Multiplayer",
                         padding: [1, 1],
                         align: :left,
-                        title: { top_center: ' Choose by typing the corresponding number : ' })
+                        title: { top_center: ' 1 or 2? ' })
     puts "\n"
   end
 
@@ -30,12 +30,12 @@ module Messages
     puts TTY::Box.frame("1 : Easy (random moves)\n\n2 : Hard (AI moves)",
                         padding: [1, 1],
                         align: :left,
-                        title: { top_center: ' Choose by typing the corresponding number : ' })
+                        title: { top_center: ' 1 or 2? ' })
     puts "\n"
   end
 
   def ask_for_starting_player
-    puts TTY::Box.frame('Do you wanna be the first to make a move[Y/n]?',
+    puts TTY::Box.frame('You wanna go first[y/n]?',
                         padding: [0, 1],
                         align: :center,
                         border: :light)
@@ -43,7 +43,7 @@ module Messages
   end
 
   def ask_for_input
-    puts TTY::Box.frame(padding: [0, 1], align: :center, border: :light) { 'Please enter a number between 1 and 9' }
+    puts TTY::Box.frame(padding: [0, 1], align: :center, border: :light) { 'Enter a number between 1 and 9' }
     puts "\n"
   end
 
@@ -66,7 +66,7 @@ module Messages
   end
 
   def ask_for_another_game
-    puts TTY::Box.frame('Do you wanna play again[y/n]?',
+    puts TTY::Box.frame('Wanna play again[y/n]?',
                         padding: [0, 1],
                         align: :center,
                         border: :light)
