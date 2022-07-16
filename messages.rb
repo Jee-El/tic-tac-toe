@@ -27,7 +27,7 @@ module Messages
   end
 
   def ask_for_difficulty_lvl
-    puts TTY::Box.frame("1 : Easy,\n\n2 : Hard",
+    puts TTY::Box.frame("1 : Easy (random moves)\n\n2 : Hard (AI moves)",
                         padding: [1, 1],
                         align: :left,
                         title: { top_center: ' Choose by typing the corresponding number : ' })
