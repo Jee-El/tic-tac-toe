@@ -10,10 +10,12 @@ module Messages
                         enable_color: true,
                         style: {  bg: :blue,
                                   fg: :white })
+    puts "\n"
   end
 
   def ask_for_name
     puts TTY::Box.frame('Enter your name', padding: [0, 1], align: :center, border: :light)
+    puts "\n"
   end
 
   def ask_for_game_type
@@ -21,10 +23,28 @@ module Messages
                         padding: [1, 1],
                         align: :left,
                         title: { top_center: ' Choose by typing the corresponding number : ' })
+    puts "\n"
+  end
+
+  def ask_for_difficulty_lvl
+    puts TTY::Box.frame("1 : Easy,\n\n2 : Hard",
+                        padding: [1, 1],
+                        align: :left,
+                        title: { top_center: ' Choose by typing the corresponding number : ' })
+    puts "\n"
+  end
+
+  def ask_for_starting_player
+    puts TTY::Box.frame('Do you wanna be the first to make a move[Y/n]?',
+                        padding: [0, 1],
+                        align: :center,
+                        border: :light)
+    puts "\n"
   end
 
   def ask_for_input
     puts TTY::Box.frame(padding: [0, 1], align: :center, border: :light) { 'Please enter a number between 1 and 9' }
+    puts "\n"
   end
 
   def announce_winner(winner_name)
@@ -33,6 +53,7 @@ module Messages
                         align: :center,
                         title: {  top_center: ' THE WINNER IS ',
                                   bottom_center: ' Good Game ' })
+    puts "\n"
   end
 
   def announce_a_tie
@@ -41,5 +62,6 @@ module Messages
                         align: :center,
                         title: {  top_center: ' NO WINNER ',
                                   bottom_center: ' Good Game ' })
+    puts "\n"
   end
 end
