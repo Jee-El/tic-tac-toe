@@ -1,72 +1,145 @@
 require './messages'
+require './win_checker'
 
 module TicTacToe
-  WIN_COMBINATIONS = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]].freeze
-
   class Game
     include Messages
+
     def initialize
-      welcome
+      clear_screen
 
-      @board = "\n 1 | 2 | 3\n#{'-' * 11}\n 4 | 5 | 6\n#{'-' * 11}\n 7 | 8 | 9\n\n"
+      @board = " 1 | 2 | 3\n#{'-' * 11}\n 4 | 5 | 6\n#{'-' * 11}\n 7 | 8 | 9\n\n"
+      @positions = Array.new(9) { '' }
 
-      @first_player = Human.new
+      game_type
 
-      build_players
-
-      ask_for_input
-    
-      puts @board
-      @is_single_player ? play_single_player : play_multiplayer(@first_player, @second_player)
-
-      game_over
+      if @is_single_player
+        play_single_player
+        game_over(@first_player_win_value, @second_player_win_value)
+      else
+        ask_for_input
+        puts @board
+        play_multiplayer(@first_player, @second_player)
+        game_over
+      end
     end
 
     private
 
-    def build_players
+    include WinChecker
+    def clear_screen
+      puts "\e[1;1H\e[2J"
+      welcome
+    end
+
+    def game_type
       loop do
         ask_for_game_type
-        game_type = gets.chomp
-        case game_type
+        case gets.chomp
         when '1'
+          clear_screen
           @is_single_player = true
-          @second_player = Computer.new
-          break
+          break single_player_difficulty
         when '2'
+          clear_screen
           @is_single_player = false
-          @second_player = Human.new
+          @first_player = Human.new('X')
+          break @second_player = Human.new('O')
+        end
+      end
+    end
+
+    def single_player_difficulty
+      loop do
+        ask_for_difficulty_lvl
+        case gets.chomp
+        when '1'
+          clear_screen
+          break starting_player(1)
+        when '2'
+          clear_screen
+          break starting_player(2)
+        end
+      end
+    end
+
+    def starting_player(difficulty_lvl)
+      loop do
+        ask_for_starting_player
+        case gets.chomp.downcase
+        when 'y'
+          clear_screen
+          @starting_player = 'human'
+          @first_player = Human.new('X')
+          @second_player = difficulty_lvl == 1 ? RandomComputer.new('O') : SmartComputer.new('O')
+          clear_screen
+          break
+        when 'n'
+          clear_screen
+          @starting_player = 'computer'
+          @first_player = difficulty_lvl == 1 ? RandomComputer.new('X') : SmartComputer.new('X')
+          @second_player = Human.new('O')
+          clear_screen
           break
         end
       end
     end
 
     def play_single_player
-      until @first_player.wins? || @second_player.wins? || Player.ties?(@board)
-        @first_player_move = gets.chomp
-        if @first_player.make_move(@board, @first_player_move, 'X') && !@first_player.wins? && !Player.ties?(@board)
-          @second_player.make_move(@board, @first_player_move, 'O')
-        end
+      if @starting_player == 'human'
+        @first_player_win_value = -1
+        @second_player_win_value = 1
+
+        ask_for_input
         puts @board
+
+        until check_winner
+          @first_player_move = gets.chomp.to_i
+          if @first_player.make_move(@first_player_move, @board, @positions) && check_winner.nil?
+            @second_player.make_move(@first_player_move, @board, @positions, [-1, 1])
+          end
+          clear_screen
+          puts @board
+        end
+      else
+        @first_player_win_value = 1
+        @second_player_win_value = -1
+
+        until check_winner([1, -1])
+          @first_player.make_move(@second_player_move, @board, @positions, [1, -1])
+          clear_screen
+          puts @board
+          break unless check_winner([1, -1]).nil?
+
+          @second_player_move = gets.chomp.to_i
+          until @second_player.make_move(@second_player_move, @board, @positions)
+            puts @board
+            @second_player_move = gets.chomp.to_i
+          end
+          puts @board
+        end
       end
     end
 
-    def play_multiplayer(current_player, other_player, index = 0, marks = %w[X O])
-      return if other_player.wins? || Player.ties?(@board)
+    def play_multiplayer(current_player, other_player, index = 0)
+      return if [-1, 0].include?(check_winner)
 
-      move = gets.chomp
-      until current_player.make_move(@board, move, marks[index])
+      move = gets.chomp.to_i
+      until current_player.make_move(move, @board, @positions)
         puts @board
-        move = gets.chomp
+        move = gets.chomp.to_i
       end
+      clear_screen
       puts @board
       play_multiplayer(other_player, current_player, 1 - index)
     end
 
-    def game_over
-      return announce_a_tie unless @first_player.wins? || @second_player.wins?
-
-      announce_winner (@first_player.wins? ? @first_player : @second_player).player_name
+    def game_over(first_player_win_value = -1, second_player_win_value = 1)
+      case check_winner([first_player_win_value, second_player_win_value])
+      when -1 then announce_winner @first_player.player_name
+      when 1 then announce_winner @second_player.player_name
+      when 0 then announce_a_tie
+      end
     end
   end
 
@@ -74,67 +147,113 @@ module TicTacToe
     include Messages
     attr_reader :player_name
 
-    def initialize
-      @past_moves = []
-    end
-
-    def wins?
-      WIN_COMBINATIONS.any? { |win| @past_moves.sort.combination(3).include?(win) }
-    end
-
-    def self.ties?(board)
-      !board.match?(/\d+/)
+    def initialize(mark)
+      @mark = mark
     end
 
     private
 
-    def make_move(board, move, mark)
-      save_move move
-      board.sub! move, mark
-    end
-
-    def save_move(move)
-      @past_moves.push move.to_i
+    def make_move(move, board, positions)
+      positions[move - 1] = @mark
+      board.sub!(move.to_s, @mark)
     end
   end
 
   # Humans can pick their own moves
   class Human < Player
-    def initialize
+    def initialize(mark)
       super
       ask_for_name
       @player_name = gets.chomp
       puts "\n"
     end
 
-    def make_move(board, move, mark)
-      return unless legal_move? board, move
+    def make_move(move, board, positions)
+      return unless legal_move? move, positions
 
       super
     end
 
     private
-    
-    def legal_move?(board, move)
-      return true if (1..9).include?(move.to_i) && board.index(move)
 
-      puts "\nPlease enter an appropriate number :"
+    def legal_move?(move, positions)
+      return true if (1..9).include?(move) && positions[move - 1].empty?
+
+      puts "\nPlease enter an appropriate number"
     end
   end
 
   # Computer picks a random move
-  class Computer < Player
-    def initialize
+  class RandomComputer < Player
+    def initialize(mark)
       super
       @player_name = 'Computer'
       @possible_moves = [*(1..9)]
     end
 
-    def make_move(board, occupied_move, mark)
-      @possible_moves -= [occupied_move.to_i]
-      @move = @possible_moves.sample.to_s
-      @possible_moves -= [@move.to_i]
-      super(board, @move, mark)
+    def make_move(occupied_move, board, positions, _win_values)
+      occupied_move ||= 0
+      @possible_moves -= [occupied_move]
+      move = @possible_moves.sample
+      @possible_moves -= [move]
+      super(move, board, positions)
+    end
+  end
+
+  class SmartComputer < Player
+    def initialize(mark)
+      super
+      @player_name = 'AI'
+      @other_mark = @mark == 'X' ? 'O' : 'X'
+    end
+
+    def make_move(occupied_move, board, positions, win_values = [-1, 1])
+      return super(1, board, positions) unless occupied_move
+
+      best_score = -Float::INFINITY
+      positions.each_with_index do |elem, i|
+        next unless elem.empty?
+
+        positions[i] = @mark
+        score = minimax(positions, false, win_values)
+        positions[i] = ''
+        if score > best_score
+          best_score = score
+          @best_move = i + 1
+        end
+      end
+      super(@best_move, board, positions)
+    end
+
+    private
+
+    include WinChecker
+    def minimax(positions, is_maximizing, win_values)
+      result = check_winner(win_values, positions)
+      return result if result
+
+      if is_maximizing
+        best_score = -Float::INFINITY
+        positions.each_with_index do |elem, i|
+          next unless elem.empty?
+
+          positions[i] = @mark
+          score = minimax(positions, false, win_values)
+          positions[i] = ''
+          best_score = [score, best_score].max
+        end
+      else
+        best_score = Float::INFINITY
+        positions.each_with_index do |elem, i|
+          next unless elem.empty?
+
+          positions[i] = @other_mark
+          score = minimax(positions, true, win_values)
+          positions[i] = ''
+          best_score = [score, best_score].min
+        end
+      end
+      best_score
     end
   end
 end
