@@ -1,5 +1,2 @@
 language = "ruby"
-run = """
-bundle install
-bundle exec ruby tic_tac_toe.rb
-"""
+run = "bundle exec ruby tic_tac_toe.rb"
