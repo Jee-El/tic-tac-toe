@@ -1,5 +1,5 @@
 language = "ruby"
 run = """
 bundle install
-bundle exec ruby tic_tac_toe.rb
+bundle exec ruby main.rb
 """
