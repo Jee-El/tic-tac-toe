@@ -10,6 +10,6 @@ module WinChecker
       return win_values[0] if win_combo.all? { |pos| positions[pos - 1] == 'X' }
       return win_values[1] if win_combo.all? { |pos| positions[pos - 1] == 'O' }
     end
-    return 0 if positions.all? { |elem| !elem.empty? }
+    return 0 if positions.none?(&:empty?)
   end
 end
