@@ -110,7 +110,7 @@ module TicTacToe
       until check_winner
         @first_player_move = ask_till_valid_move(@first_player)
         @first_player.make_move(@first_player_move, @board, @positions)
-        check_winner.nil? && @second_player.make_move(@first_player_move, @board, @positions, [-1, 1])
+        check_winner.nil? && @second_player.make_move(@first_player_move, @board, @positions)
         clear_screen
         puts @board
       end
@@ -179,8 +179,7 @@ module TicTacToe
       @possible_moves = [*(1..9)]
     end
 
-    def make_move(occupied_move, board, positions, _win_values)
-      occupied_move ||= 0
+    def make_move(occupied_move, board, positions, _win_values = [-1, 1])
       @possible_moves -= [occupied_move]
       move = @possible_moves.sample
       @possible_moves -= [move]
@@ -195,58 +194,58 @@ module TicTacToe
       super
       @player_name = 'AI'
       @other_mark = @mark == 'X' ? 'O' : 'X'
+      @possible_moves = [*(0..8)]
     end
 
     def make_move(occupied_move, board, positions, win_values = [-1, 1])
-      return super(1, board, positions) unless occupied_move
+      unless occupied_move
+        @possible_moves -= [0]
+        return super(1, board, positions)
+      end
 
-      best_move(positions, win_values)
+      @possible_moves -= [occupied_move - 1]
+      best_move(@possible_moves, positions, win_values)
+      @possible_moves -= [@best_move - 1]
       super(@best_move, board, positions)
     end
 
     private
 
-    def best_move(positions, win_values)
+    def best_move(possible_moves, positions, win_values)
       best_score = -Float::INFINITY
-      positions.each_with_index do |elem, i|
-        next unless elem.empty?
-
-        positions[i] = @mark
-        score = minimax(positions, false, win_values)
-        positions[i] = ''
-        (best_score = score) && (@best_move = i + 1) if score > best_score
+      possible_moves.each do |possible_move|
+        positions[possible_move] = @mark
+        score = minimax(possible_moves - [possible_move], positions, false, win_values)
+        positions[possible_move] = ''
+        (best_score = score) && (@best_move = possible_move + 1) if score > best_score
       end
     end
 
     include WinChecker
-    def minimax(positions, is_maximizing, win_values)
+    def minimax(possible_moves, positions, is_maximizing, win_values)
       result = check_winner(win_values, positions)
       return result if result
 
-      is_maximizing ? maximize(positions, win_values) : minimize(positions, win_values)
+      is_maximizing ? maximize(possible_moves, positions, win_values) : minimize(possible_moves, positions, win_values)
     end
 
-    def maximize(positions, win_values)
+    def maximize(possible_moves, positions, win_values)
       best_score = -Float::INFINITY
-      positions.each_with_index do |elem, i|
-        next unless elem.empty?
-
-        positions[i] = @mark
-        score = minimax(positions, false, win_values)
-        positions[i] = ''
+      possible_moves.each do |possible_move|
+        positions[possible_move] = @mark
+        score = minimax(possible_moves - [possible_move], positions, false, win_values)
+        positions[possible_move] = ''
         best_score = [score, best_score].max
       end
       best_score
     end
 
-    def minimize(positions, win_values)
+    def minimize(possible_moves, positions, win_values)
       best_score = Float::INFINITY
-      positions.each_with_index do |elem, i|
-        next unless elem.empty?
-
-        positions[i] = @other_mark
-        score = minimax(positions, true, win_values)
-        positions[i] = ''
+      possible_moves.each do |possible_move|
+        positions[possible_move] = @other_mark
+        score = minimax(possible_moves - [possible_move], positions, true, win_values)
+        positions[possible_move] = ''
         best_score = [score, best_score].min
       end
       best_score
