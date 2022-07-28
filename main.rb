@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require './tic_tac_toe'
+require './game'
 
-def play
-  current_game = TicTacToe::Game.new
-  current_game.clear_screen
-  current_game.game_type
-  current_game.start
-  current_game.over
-  play if current_game.play_again?
+def start_game
+  game = Game.new
+  game.start
+  start_game if game.play_again?
 end
-play
+start_game
