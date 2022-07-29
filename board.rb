@@ -35,11 +35,8 @@ module Board
   end
 
   def rules_clear?
-    puts
-    puts 'Are the rules clear[Y/n]?'
-    puts
-    response = gets.chomp.downcase
-    response == 'y' || response.empty?
+    puts "\nPress enter to proceed\n\n"
+    gets.chomp.downcase.empty?
   end
 
   def mark_board_positions
@@ -69,7 +66,7 @@ module Board
 
   def ask_for_name
     puts TTY::Box.frame('Type your name', padding: [0, 1], align: :center, border: :light)
-    puts "\n"
+    puts
   end
 
   def ask_for_game_type
@@ -123,14 +120,10 @@ module Board
   end
 
   def invalid_move_error
-    puts
-    puts 'Please enter an appropriate number'
-    puts
+    puts "\nPlease enter an appropriate number\n\n"
   end
 
   def invalid_starting_player_error
-    puts
-    puts 'Press enter or type y to go first, n to go second'
-    puts
+    puts "\nPress enter or type y to go first, n to go second\n\n"
   end
 end
