@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
-require './player'
-
 # Computer picks a random move
 class RandomComputer < Player
-  def initialize(mark)
+  def initialize(player_mark, player_color)
     super
     @player_name = 'Computer'
     @possible_moves = [*(1..9)]
   end
 
-  def make_move(occupied_move, board, positions, _win_values = [-1, 1])
-    @possible_moves -= [occupied_move]
+  def make_move(occupied_move, positions, numbers_then_marks, _win_values = [-1, 1])
+    @possible_moves.delete(occupied_move)
     move = @possible_moves.sample
-    @possible_moves -= [move]
-    super(move, board, positions)
+    @possible_moves.delete(move)
+    super(move, positions, numbers_then_marks)
   end
 end

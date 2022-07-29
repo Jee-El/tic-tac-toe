@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require './messages'
-require './win_checker'
+require './board'
+require './player'
 require './human'
 require './random_computer'
 require './smart_computer'
@@ -9,14 +9,19 @@ require './smart_computer'
 # Rules, board, game modes
 class Game
   def initialize
-    @board = " 1 | 2 | 3\n#{'-' * 11}\n 4 | 5 | 6\n#{'-' * 11}\n 7 | 8 | 9\n\n"
+    # The zero is just to make working with the array simpler, it's not used
+    @numbers_then_marks = *(0..9)
     @positions = Array.new(9) { '' }
     @is_single_player = false
   end
 
   def start
     clear_screen
+    clarify_rules
+    clarify_rules until rules_clear?
+    clear_screen
     game_type
+    clear_screen
     play
     over
   end
@@ -29,11 +34,7 @@ class Game
 
   private
 
-  include Messages
-  def clear_screen
-    puts "\e[1;1H\e[2J"
-    welcome
-  end
+  include Board
 
   def game_type
     ask_for_game_type
@@ -43,8 +44,8 @@ class Game
       @is_single_player = true
       single_player_difficulty
     else
-      @first_player = Human.new('X')
-      @second_player = Human.new('O')
+      @first_player = Human.new('X', :green)
+      @second_player = Human.new('O', :red)
     end
   end
 
@@ -57,32 +58,31 @@ class Game
 
   def starting_player(difficulty_lvl)
     ask_for_starting_player
-    until %w[y n].include?(input = gets.chomp.downcase)
+    until ['', 'y', 'n'].include?(input = gets.chomp.downcase)
       ask_for_starting_player
       puts "\nEnter 'y' to go first, 'n' to go second\n\n"
     end
     clear_screen
-    input == 'y' ? human_starts_setup(difficulty_lvl) : computer_starts_setup(difficulty_lvl)
+    input == 'n' ? computer_starts_setup(difficulty_lvl) : human_starts_setup(difficulty_lvl)
     clear_screen
   end
 
   def human_starts_setup(difficulty_lvl)
     @starting_player = 'human'
-    @first_player = Human.new('X')
-    @second_player = difficulty_lvl == 1 ? RandomComputer.new('O') : SmartComputer.new('O')
+    @first_player = Human.new('X', :green)
+    @second_player = difficulty_lvl == 1 ? RandomComputer.new('O', :red) : SmartComputer.new('O', :red)
   end
 
   def computer_starts_setup(difficulty_lvl)
     @starting_player = 'computer'
-    @first_player = difficulty_lvl == 1 ? RandomComputer.new('X') : SmartComputer.new('X')
-    @second_player = Human.new('O')
+    @first_player = difficulty_lvl == 1 ? RandomComputer.new('X', :green) : SmartComputer.new('X', :green)
+    @second_player = Human.new('O', :red)
   end
 
   def play
+    board
     return play_single_player if @is_single_player
 
-    ask_for_input
-    puts @board
     play_multiplayer(@first_player, @second_player)
   end
 
@@ -93,13 +93,12 @@ class Game
   def ask_till_valid_move(player)
     move = gets.chomp.to_i
     until player.legal_move?(move, @positions)
-      puts @board
+      board
       move = gets.chomp.to_i
     end
     move
   end
 
-  include WinChecker
   def over
     case check_winner
     when -1 then announce_winner @first_player.player_name
@@ -109,28 +108,28 @@ class Game
   end
 
   def play_single_player_human_first
-    ask_for_input
-    puts @board
-
     until check_winner
       @first_player_move = ask_till_valid_move(@first_player)
-      @first_player.make_move(@first_player_move, @board, @positions)
-      check_winner.nil? && @second_player.make_move(@first_player_move, @board, @positions)
-      clear_screen
-      puts @board
+      @first_player.make_move(@first_player_move, @positions, @numbers_then_marks)
+      clear_screen_show_board
+      break unless check_winner.nil?
+
+      @second_player.make_move(@first_player_move, @positions, @numbers_then_marks)
+      sleep 1 if check_winner.nil?
+      clear_screen_show_board
     end
   end
 
   def play_single_player_computer_first
     until check_winner([1, -1])
-      @first_player.make_move(@second_player_move, @board, @positions, [1, -1])
-      clear_screen
-      puts @board
+      @first_player.make_move(@second_player_move, @positions, @numbers_then_marks, [1, -1])
+      sleep 1 if check_winner([1, -1]).nil?
+      clear_screen_show_board
       break unless check_winner([1, -1]).nil?
 
       @second_player_move = ask_till_valid_move(@second_player)
-      @second_player.make_move(@second_player_move, @board, @positions)
-      puts @board
+      @second_player.make_move(@second_player_move, @positions, @numbers_then_marks)
+      clear_screen_show_board
     end
   end
 
@@ -138,9 +137,8 @@ class Game
     return if check_winner
 
     current_player_move = ask_till_valid_move(current_player)
-    current_player.make_move(current_player_move, @board, @positions)
-    clear_screen
-    puts @board
+    current_player.make_move(current_player_move, @positions, @numbers_then_marks)
+    clear_screen_show_board
     play_multiplayer(other_player, current_player, 1 - index)
   end
 end

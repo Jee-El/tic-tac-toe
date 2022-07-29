@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require './player'
-
 # Humans can pick their own moves
 class Human < Player
-  def initialize(mark)
+  include Board
+
+  def initialize(player_mark, player_color)
     super
     ask_for_name
     @player_name = gets.chomp

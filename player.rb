@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
+require 'colorize'
+
 # Updates board for all players
 class Player
-  include Messages
   attr_reader :player_name
 
-  def initialize(mark)
-    @mark = mark
+  def initialize(player_mark, player_color)
+    @player_mark = player_mark
+    @player_color = player_color
   end
 
-  def make_move(move, board, positions)
-    positions[move - 1] = @mark
-    board.sub!(move.to_s, @mark)
+  def make_move(move, positions, numbers_then_marks)
+    positions[move - 1] = @player_mark
+    numbers_then_marks[move] = @player_mark.colorize(@player_color)
   end
 end
