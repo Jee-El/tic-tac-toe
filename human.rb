@@ -22,7 +22,7 @@ class Human < Player
   def legal_move?(move, positions)
     return true if (1..9).include?(move) && positions[move - 1].empty?
 
-    invalid_input_error
+    invalid_move_error
   end
 
   def ask_till_valid_move(positions)
