@@ -100,7 +100,7 @@ module Board
     puts TTY::Box.frame(winner_name,
                         padding: [1, 1],
                         align: :center,
-                        title: {  top_center: ' THE WINNER IS ',
+                        title: {  top_center: ' The Winner Is ',
                                   bottom_center: ' Good Game ' })
     puts
   end
@@ -109,7 +109,7 @@ module Board
     puts TTY::Box.frame('IT\'S A TIE',
                         padding: [1, 1],
                         align: :center,
-                        title: {  top_center: ' NO WINNER ',
+                        title: {  top_center: ' No Winner ',
                                   bottom_center: ' Good Game ' })
     puts
   end
@@ -119,6 +119,18 @@ module Board
                         padding: [0, 1],
                         align: :center,
                         border: :light)
+    puts
+  end
+
+  def invalid_move_error
+    puts
+    puts 'Please enter an appropriate number'
+    puts
+  end
+
+  def invalid_starting_player_error
+    puts
+    puts 'Press enter or type y to go first, n to go second'
     puts
   end
 end

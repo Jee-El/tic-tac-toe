@@ -9,11 +9,11 @@ require './smart_computer'
 # Rules, board, game modes
 class Game
   def initialize
+    mark_board_positions
     @positions = Array.new(9) { '' }
   end
 
   def start
-    mark_board_positions
     clear_screen
     clarify_rules
     clarify_rules until rules_clear?
@@ -26,8 +26,8 @@ class Game
 
   def play_again?
     ask_for_another_game
-    ask_for_another_game until %w[y n].include?(input = gets.chomp.downcase)
-    input == 'y'
+    ask_for_another_game until ['', 'y', 'n'].include?(input = gets.chomp.downcase)
+    input != 'n'
   end
 
   private
@@ -58,7 +58,7 @@ class Game
     ask_for_starting_player
     until ['', 'y', 'n'].include?(input = gets.chomp.downcase)
       ask_for_starting_player
-      puts "\nEnter 'y' to go first, 'n' to go second\n\n"
+      invalid_starting_player_error
     end
     clear_screen
     input == 'n' ? computer_starts_setup(difficulty_lvl) : human_starts_setup(difficulty_lvl)

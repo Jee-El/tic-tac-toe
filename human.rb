@@ -8,7 +8,7 @@ class Human < Player
     super
     ask_for_name
     @player_name = gets.chomp
-    puts "\n"
+    puts
   end
 
   def make_move(positions, numbers_then_marks)
@@ -22,7 +22,7 @@ class Human < Player
   def legal_move?(move, positions)
     return true if (1..9).include?(move) && positions[move - 1].empty?
 
-    puts "\nPlease enter an appropriate number\n\n"
+    invalid_input_error
   end
 
   def ask_till_valid_move(positions)
