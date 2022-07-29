@@ -11,9 +11,26 @@ class Human < Player
     puts "\n"
   end
 
+  def make_move(positions, numbers_then_marks)
+    move = ask_till_valid_move(positions)
+    super(move, positions, numbers_then_marks)
+    move
+  end
+
+  private
+
   def legal_move?(move, positions)
     return true if (1..9).include?(move) && positions[move - 1].empty?
 
     puts "\nPlease enter an appropriate number\n\n"
+  end
+
+  def ask_till_valid_move(positions)
+    move = gets.chomp.to_i
+    until legal_move?(move, positions)
+      board
+      move = gets.chomp.to_i
+    end
+    move
   end
 end

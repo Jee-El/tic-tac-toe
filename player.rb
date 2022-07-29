@@ -6,6 +6,8 @@ require 'colorize'
 class Player
   attr_reader :player_name
 
+  private
+
   def initialize(player_mark, player_color)
     @player_mark = player_mark
     @player_color = player_color

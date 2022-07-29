@@ -9,13 +9,11 @@ require './smart_computer'
 # Rules, board, game modes
 class Game
   def initialize
-    # The zero is just to make working with the array simpler, it's not used
-    @numbers_then_marks = *(0..9)
     @positions = Array.new(9) { '' }
-    @is_single_player = false
   end
 
   def start
+    mark_board_positions
     clear_screen
     clarify_rules
     clarify_rules until rules_clear?
@@ -90,15 +88,6 @@ class Game
     @starting_player == 'human' ? play_single_player_human_first : play_single_player_computer_first
   end
 
-  def ask_till_valid_move(player)
-    move = gets.chomp.to_i
-    until player.legal_move?(move, @positions)
-      board
-      move = gets.chomp.to_i
-    end
-    move
-  end
-
   def over
     case check_winner
     when -1 then announce_winner @first_player.player_name
@@ -109,13 +98,12 @@ class Game
 
   def play_single_player_human_first
     until check_winner
-      @first_player_move = ask_till_valid_move(@first_player)
-      @first_player.make_move(@first_player_move, @positions, @numbers_then_marks)
+      @first_player_move = @first_player.make_move(@positions, @numbers_then_marks)
       clear_screen_show_board
       break unless check_winner.nil?
 
       @second_player.make_move(@first_player_move, @positions, @numbers_then_marks)
-      sleep 1 if check_winner.nil?
+      sleep 0.9 if check_winner.nil?
       clear_screen_show_board
     end
   end
@@ -123,12 +111,11 @@ class Game
   def play_single_player_computer_first
     until check_winner([1, -1])
       @first_player.make_move(@second_player_move, @positions, @numbers_then_marks, [1, -1])
-      sleep 1 if check_winner([1, -1]).nil?
+      sleep 0.9 if check_winner([1, -1]).nil?
       clear_screen_show_board
       break unless check_winner([1, -1]).nil?
 
-      @second_player_move = ask_till_valid_move(@second_player)
-      @second_player.make_move(@second_player_move, @positions, @numbers_then_marks)
+      @second_player_move = @second_player.make_move(@positions, @numbers_then_marks)
       clear_screen_show_board
     end
   end
@@ -136,8 +123,7 @@ class Game
   def play_multiplayer(current_player, other_player, index = 0)
     return if check_winner
 
-    current_player_move = ask_till_valid_move(current_player)
-    current_player.make_move(current_player_move, @positions, @numbers_then_marks)
+    current_player.make_move(@positions, @numbers_then_marks)
     clear_screen_show_board
     play_multiplayer(other_player, current_player, 1 - index)
   end

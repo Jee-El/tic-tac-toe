@@ -28,7 +28,9 @@ module Board
   end
 
   def clarify_rules
-    puts TTY::Box.frame("- Use numbers 1-9 to make a move\n\n- 1st player's mark -> #{'X'.green}\n\n- 2nd player's mark -> #{'O'.red}\n\n",
+    puts TTY::Box.frame("- Use numbers 1-9 to make a move\n\n"\
+                        "- 1st player's mark -> #{'X'.green}\n\n"\
+                        "- 2nd player's mark -> #{'O'.red}\n\n",
                         padding: [1, 1], border: :ascii)
   end
 
@@ -40,10 +42,19 @@ module Board
     response == 'y' || response.empty?
   end
 
+  def mark_board_positions
+    # The zero is just to make working with the array simpler, it's not used
+    @numbers_then_marks = *(0..9)
+  end
+
   def board
     # The colorizing gem uses combination of numbers/special characters
     # they can conflict with the board's positions/numbers
-    puts " #{@numbers_then_marks[1]} | #{@numbers_then_marks[2]} | #{@numbers_then_marks[3]}\n#{'-' * 11}\n #{@numbers_then_marks[4]} | #{@numbers_then_marks[5]} | #{@numbers_then_marks[6]}\n#{'-' * 11}\n #{@numbers_then_marks[7]} | #{@numbers_then_marks[8]} | #{@numbers_then_marks[9]}\n\n"
+    puts " #{@numbers_then_marks[1]} | #{@numbers_then_marks[2]} | #{@numbers_then_marks[3]}\n"\
+         "#{'-' * 11}\n"\
+         " #{@numbers_then_marks[4]} | #{@numbers_then_marks[5]} | #{@numbers_then_marks[6]}\n"\
+         "#{'-' * 11}\n"\
+         " #{@numbers_then_marks[7]} | #{@numbers_then_marks[8]} | #{@numbers_then_marks[9]}\n\n"
   end
 
   def clear_screen

@@ -3,5 +3,5 @@
 source 'https://rubygems.org'
 
 # gem "rails"
-gem 'tty-box'
 gem 'colorize'
+gem 'tty-box'
