@@ -9,7 +9,7 @@ require './smart_computer'
 # Rules, board, game modes
 class Game
   def initialize
-    mark_board_positions
+    @board = make_board
     @positions = Array.new(9) { '' }
   end
 
@@ -78,7 +78,7 @@ class Game
   end
 
   def play
-    board
+    puts @board
     return play_single_player if @is_single_player
 
     play_multiplayer(@first_player, @second_player)
@@ -98,11 +98,11 @@ class Game
 
   def play_single_player_human_first
     until check_winner
-      @first_player_move = @first_player.make_move(@positions, @numbers_then_marks)
+      @first_player_move = @first_player.make_move!(@positions, @board)
       clear_screen_show_board
       break unless check_winner.nil?
 
-      @second_player.make_move(@first_player_move, @positions, @numbers_then_marks)
+      @second_player.make_move!(@first_player_move, @positions, @board)
       sleep 0.9 if check_winner.nil?
       clear_screen_show_board
     end
@@ -110,12 +110,12 @@ class Game
 
   def play_single_player_computer_first
     until check_winner([1, -1])
-      @first_player.make_move(@second_player_move, @positions, @numbers_then_marks, [1, -1])
+      @first_player.make_move!(@second_player_move, @positions, @board, [1, -1])
       sleep 0.9 if check_winner([1, -1]).nil?
       clear_screen_show_board
       break unless check_winner([1, -1]).nil?
 
-      @second_player_move = @second_player.make_move(@positions, @numbers_then_marks)
+      @second_player_move = @second_player.make_move!(@positions, @board)
       clear_screen_show_board
     end
   end
@@ -123,7 +123,7 @@ class Game
   def play_multiplayer(current_player, other_player, index = 0)
     return if check_winner
 
-    current_player.make_move(@positions, @numbers_then_marks)
+    current_player.make_move!(@positions, @board)
     clear_screen_show_board
     play_multiplayer(other_player, current_player, 1 - index)
   end

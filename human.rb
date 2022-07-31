@@ -11,9 +11,9 @@ class Human < Player
     puts
   end
 
-  def make_move(positions, numbers_then_marks)
+  def make_move!(positions, board)
     move = ask_till_valid_move(positions)
-    super(move, positions, numbers_then_marks)
+    super(move, positions, board)
     move
   end
 

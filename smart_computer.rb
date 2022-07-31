@@ -10,15 +10,15 @@ class SmartComputer < Player
     @possible_moves = *(1..9)
   end
 
-  def make_move(occupied_move, positions, numbers_then_marks, win_values = [-1, 1])
+  def make_move!(occupied_move, positions, board, win_values = [-1, 1])
     unless occupied_move
       @possible_moves.delete(1)
-      return super(1, positions, numbers_then_marks)
+      return super(1, positions, board)
     end
     @possible_moves.delete(occupied_move)
     best_move(@possible_moves, positions, win_values, -Float::INFINITY, Float::INFINITY)
     @possible_moves.delete(@best_move)
-    super(@best_move, positions, numbers_then_marks)
+    super(@best_move, positions, board)
   end
 
   private

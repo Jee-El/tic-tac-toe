@@ -13,8 +13,8 @@ class Player
     @player_color = player_color
   end
 
-  def make_move(move, positions, numbers_then_marks)
+  def make_move!(move, positions, board)
     positions[move - 1] = @player_mark
-    numbers_then_marks[move] = @player_mark.colorize(@player_color)
+    board.sub!(/\s#{move}\s/, " #{@player_mark.colorize(@player_color)} ")
   end
 end
