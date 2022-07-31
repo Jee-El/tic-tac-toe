@@ -15,6 +15,9 @@ class Player
 
   def make_move!(move, positions, board)
     positions[move - 1] = @player_mark
-    board.sub!(/\s#{move}\s/, " #{@player_mark.colorize(@player_color)} ")
+    # The space around the character is important because
+    # the colorize methods contain numbers and
+    # they can conflict with the board's positions
+    board.sub!(/ #{move} /, " #{@player_mark.colorize(@player_color)} ")
   end
 end
