@@ -2,8 +2,6 @@
 
 # Humans can pick a move on their own
 class Human < Player
-  include Board
-
   def initialize(player_mark, player_color)
     super
     ask_for_name
@@ -18,6 +16,8 @@ class Human < Player
   end
 
   private
+
+  include Board
 
   def legal_move?(move, positions)
     return true if (1..9).include?(move) && positions[move - 1].empty?
