@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Humans can pick their own moves
+# Humans can pick a move on their own
 class Human < Player
   include Board
 
@@ -12,7 +12,7 @@ class Human < Player
   end
 
   def make_move!(positions, board)
-    move = ask_till_valid_move(positions)
+    move = ask_till_valid_move(positions, board)
     super(move, positions, board)
     move
   end
@@ -25,10 +25,10 @@ class Human < Player
     invalid_move_error
   end
 
-  def ask_till_valid_move(positions)
+  def ask_till_valid_move(positions, board)
     move = gets.chomp.to_i
     until legal_move?(move, positions)
-      board
+      puts board
       move = gets.chomp.to_i
     end
     move
