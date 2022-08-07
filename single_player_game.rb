@@ -13,8 +13,7 @@ module TicTacToe
     end
 
     def play
-      clear_screen
-      board.draw
+      super
       case @starting_player
       when 'computer' then play_computer_first
       when 'human' then play_human_first

@@ -8,6 +8,11 @@ module TicTacToe
       @positions = Array.new(9) { '' }
     end
 
+    def play
+      clear_screen
+      board.draw
+    end
+
     def play_again?
       ask_for_another_game
       ask_for_another_game until ['', 'y', 'n'].include?(input = gets.chomp.downcase)

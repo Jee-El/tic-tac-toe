@@ -47,13 +47,17 @@ module TicTacToe
     end
 
     def starting_player
-      starting_players_by_input = { 'human' => ['', 'y'], 'computer' => ['n']}
+      starting_players_by_input = { 'human' => ['', 'y'], 'computer' => ['n'] }
       ask_for_starting_player
       until starting_players_by_input.values.flatten.include?(input = gets.chomp.downcase)
         ask_for_starting_player
         invalid_starting_player_error
       end
       clear_screen
+      setup_starting_player(starting_players_by_input, input)
+    end
+
+    def setup_starting_player(starting_players_by_input, input)
       starting_players_by_input.each do |starting_player, corresponding_input|
         next unless corresponding_input.include?(input)
 
