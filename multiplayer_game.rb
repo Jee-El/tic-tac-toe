@@ -17,6 +17,8 @@ module TicTacToe
       over
     end
 
+    private
+
     def play_multiplayer(current_player = @first_player, other_player = @second_player, index = 0)
       return if board.check_winner(positions)
 

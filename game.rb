@@ -6,16 +6,6 @@ require './messages'
 module TicTacToe
   # Rules, board, game modes
   class Game
-    def initialize
-      @board = Board.new
-      @positions = Array.new(9) { '' }
-    end
-
-    def play
-      clear_screen
-      board.draw
-    end
-
     def play_again?
       ask_for_another_game
       ask_for_another_game until ['', 'y', 'n'].include?(input = gets.chomp.downcase)
@@ -27,6 +17,16 @@ module TicTacToe
     attr_reader :positions, :board
 
     include Messages
+
+    def initialize
+      @board = Board.new
+      @positions = Array.new(9) { '' }
+    end
+
+    def play
+      clear_screen
+      board.draw
+    end
 
     def over
       case board.check_winner(positions)
