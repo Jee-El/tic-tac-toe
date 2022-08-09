@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require './player'
+
 module TicTacToe
   # Computer picks a random move
   class RandomComputer < Player

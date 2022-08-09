@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require './player'
+
 module TicTacToe
   # Smart computer picks the best possible move
   # Uses minimax algorithm

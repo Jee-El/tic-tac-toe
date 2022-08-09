@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require './game_setup'
+require './multiplayer_game'
+require './easy_single_player_game'
+require './hard_single_player_game'
 
 def start_game
   game_setup = TicTacToe::GameSetup.new

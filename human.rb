@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require './messages'
+require './player'
+
 module TicTacToe
   # Humans can pick a move on their own
   class Human < Player

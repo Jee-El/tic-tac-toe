@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require './game'
+require './human'
+
 module TicTacToe
   # human vs computer
   class SinglePlayerGame < Game

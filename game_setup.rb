@@ -1,16 +1,6 @@
 # frozen_string_literal: true
 
 require_relative './messages'
-require_relative './board'
-require_relative './game'
-require_relative './multiplayer_game'
-require_relative './single_player_game'
-require_relative './easy_single_player_game'
-require_relative './hard_single_player_game'
-require_relative './player'
-require_relative './human'
-require_relative './random_computer'
-require_relative './smart_computer'
 
 module TicTacToe
   # Setup game mode, starting player, game difficulty

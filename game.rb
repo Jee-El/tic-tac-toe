@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require './board'
+require './messages'
+
 module TicTacToe
   # Rules, board, game modes
   class Game
@@ -21,7 +24,7 @@ module TicTacToe
 
     private
 
-    attr_accessor :positions, :board
+    attr_reader :positions, :board
 
     include Messages
 

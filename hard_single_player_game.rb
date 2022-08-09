@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require './single_player_game'
+require './smart_computer'
+
 module TicTacToe
   # human vs smart computer/AI
   class HardSinglePlayerGame < SinglePlayerGame
