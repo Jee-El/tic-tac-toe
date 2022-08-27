@@ -6,6 +6,15 @@ require './human'
 module TicTacToe
   # human vs computer
   class SinglePlayerGame < Game
+    def initialize(starting_player)
+      @starting_player = starting_player
+      case @starting_player
+      when 'computer' then @second_player = Human.new('O', :red)
+      else @first_player = Human.new('X', :green)
+      end
+      super()
+    end
+
     def play
       super
       case @starting_player
@@ -16,15 +25,6 @@ module TicTacToe
     end
 
     private
-
-    def initialize(starting_player)
-      @starting_player = starting_player
-      case @starting_player
-      when 'computer' then @second_player = Human.new('O', :red)
-      else @first_player = Human.new('X', :green)
-      end
-      super()
-    end
 
     def play_human_first
       until board.check_winner(positions)
