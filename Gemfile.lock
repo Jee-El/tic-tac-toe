@@ -15,21 +15,15 @@ GEM
       tty-cursor (~> 0.7)
     tty-color (0.6.0)
     tty-cursor (0.7.1)
-    tty-screen (0.8.1)
-    tty-table (0.12.0)
-      pastel (~> 0.8)
-      strings (~> 0.2.0)
-      tty-screen (~> 0.8)
-    unicode-display_width (2.2.0)
+    unicode-display_width (2.3.0)
     unicode_utils (1.4.0)
 
 PLATFORMS
-  x86_64-linux
+  x86_64-darwin-21
 
 DEPENDENCIES
   colorize
   tty-box
-  tty-table
 
 BUNDLED WITH
-   2.3.14
+   2.3.26
