@@ -33,8 +33,8 @@ module TicTacToe
         score = minimax(possible_moves - [possible_move], positions, board, false, win_values, alpha, beta)
         positions[possible_move - 1] = ''
         (best_score = score) && (@best_move = possible_move) if score > best_score
+        break if best_score >= beta
         alpha = [best_score, alpha].max
-        break if alpha >= beta
       end
     end
 
@@ -56,8 +56,8 @@ module TicTacToe
         score = minimax(possible_moves - [possible_move], positions, board, false, win_values, alpha, beta)
         positions[possible_move - 1] = ''
         best_score = [score, best_score].max
+        break if best_score >= beta
         alpha = [best_score, alpha].max
-        break if alpha > beta
       end
       best_score
     end
@@ -69,8 +69,8 @@ module TicTacToe
         score = minimax(possible_moves - [possible_move], positions, board, true, win_values, alpha, beta)
         positions[possible_move - 1] = ''
         best_score = [score, best_score].min
+        break if best_score <= alpha
         beta = [best_score, beta].min
-        break if alpha > beta
       end
       best_score
     end
